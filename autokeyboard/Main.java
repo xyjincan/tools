@@ -7,21 +7,39 @@ public class Main {
 	public static void main(String[] args) throws Exception {
 		int[] keys = new int[args.length];
 		for(int i=0;i<args.length;i++) {
-			keys[i] = getValue(args[i]);
+			keys[i] = getKeyValue(args[i]);
 		}
 		PressKey pk = new PressKey();
 		pk.Press(keys);
 	}
 	
-	public static int getValue(String key) {
+	public static String formatKey(String ikey) {
+		ikey = ikey.toUpperCase();
+		// java.awt.event.KeyEvent  public static final int VK_CONTROL = 0x11;
+		if(ikey.equals("CTRL"))
+		{
+			return "CONTROL";
+		}
+		if(ikey.equals("BACKSPACE"))
+		{
+			return "BACK_SPACE";
+		}
+		return ikey;
+	}
+	
+	public static int getKeyValue(String key) {
+		
+		int kv = -1;
 		Class<KeyEvent>  clazz = KeyEvent.class;
 		try {
-			Field field = clazz.getField("VK_"+key.toUpperCase());
-			return field.getInt(null);
+			key = formatKey(key);
+			Field field = clazz.getField("VK_" + key.toUpperCase());
+			kv = field.getInt(null);
+			return kv;
 		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
 			e.printStackTrace();
 		}
-		return -1;
+		return kv;
 	}
 }
 
